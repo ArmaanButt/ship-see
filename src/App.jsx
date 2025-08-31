@@ -1,10 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import useWebSocket from "react-use-websocket";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [messageHistory, setMessageHistory] = useState([]);
+
+  const [ships, SetShips] = useState({});
+
+  const [socketUrl, setSocketUrl] = useState("/ws");
+
+  const { sendMessage, lastJsonMessage, readyState } = useWebSocket(socketUrl, {
+    shouldReconnect: (closeEvent) => true,
+  });
+
+  useEffect(() => {
+    if (lastJsonMessage !== null) {
+      console.log(lastJsonMessage);
+      setMessageHistory((prev) => prev.concat(lastJsonMessage));
+      SetShips((prev) => {
+        prev[lastJsonMessage.MetaData.MMSI_String] = lastJsonMessage.MetaData;
+        return prev;
+      });
+    }
+  }, [lastJsonMessage]);
 
   return (
     <>
@@ -29,7 +50,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
