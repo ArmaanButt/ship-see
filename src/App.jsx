@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
+import "leaflet/dist/leaflet.css";
 import useWebSocket from "react-use-websocket";
 
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+
 function App() {
+  const position = [37.74754, -122.33417];
   const [count, setCount] = useState(0);
   const [messageHistory, setMessageHistory] = useState([]);
 
@@ -29,26 +32,20 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <MapContainer
+        center={position}
+        zoom={13}
+        style={{ height: "100vh", width: "100vw" }}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {Object.values(ships).map((e) => {
+          return (
+            <Marker key={e.MMSI} position={[e.latitude, e.longitude]}>
+              <Popup>{e.ShipName}</Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
     </>
   );
 }
