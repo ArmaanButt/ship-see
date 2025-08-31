@@ -8,7 +8,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 
 function App() {
   const position = [37.74754, -122.33417];
-  const [count, setCount] = useState(0);
+
   const [messageHistory, setMessageHistory] = useState([]);
 
   const [ships, SetShips] = useState({});
